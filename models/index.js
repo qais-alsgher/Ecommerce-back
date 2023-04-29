@@ -14,7 +14,7 @@ const Postges_URL = process.env.DB_URL || process.env.LOCALE_DB_URL;
 
 const sequelizeOptions = {};
 const db = {};
-
+db.Op = Op;
 let sequelize = new Sequelize(Postges_URL, sequelizeOptions);
 
 db.sequelize = sequelize;
