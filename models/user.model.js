@@ -1,5 +1,4 @@
 "use strict";
-const { decode } = require("base-64");
 const jwt = require("jsonwebtoken");
 
 module.exports = (sequelize, DataTypes) => {
@@ -19,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       isEmail: true,
     },
+    phoneNumber: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
     gender: {
       type: DataTypes.ENUM("Male", "Female"),
       allowNull: false,
@@ -27,11 +31,6 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
-    },
-    phoneNumber: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
     },
     address: {
       type: DataTypes.STRING,
