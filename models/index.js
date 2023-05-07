@@ -1,5 +1,6 @@
 "use strict";
 const { Sequelize, DataTypes, Op } = require("sequelize");
+const GeneralController = require("../collection/general-controller");
 require("dotenv").config();
 
 const Postges_URL = process.env.DB_URL || process.env.LOCALE_DB_URL;
@@ -26,6 +27,14 @@ db.reports = require("./report.model.js")(sequelize, DataTypes);
 db.carts = require("./cart.model.js")(sequelize, DataTypes);
 db.wishlists = require("./wishlist.model.js")(sequelize, DataTypes);
 db.reviews = require("./review.model.js")(sequelize, DataTypes);
+
+// controllers
+db.userController = new GeneralController(db.users);
+db.itemController = new GeneralController(db.items);
+db.reportController = new GeneralController(db.reports);
+db.cartController = new GeneralController(db.carts);
+db.wishlistController = new GeneralController(db.wishlists);
+db.reviewController = new GeneralController(db.reviews);
 
 // associations
 db.users.hasMany(db.items, { foreignKey: "userId", sourceKey: "id" });
