@@ -13,5 +13,5 @@ db.sequelize
   });
 
 // db.sequelize.sync({ force: true }).then(() => {
-//   startServer(process.env.PORT);
+//   server.start(process.env.PORT || 8081);
 // });

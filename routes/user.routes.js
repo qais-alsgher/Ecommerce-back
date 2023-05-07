@@ -13,18 +13,20 @@ const {
   userPurchasesBill,
   getUsersActive,
   getUsersBlocked,
+  blockedUser,
 } = require("../controllers/userController");
 
 router.post("/signup", basicAuth, signup);
-router.post("/login", bearerAuth, login);
+router.post("/login", login);
 // router.get("/users", bearerAuth, permissions("read"), getUsers);
-router.get("/users", getUsers);
-router.get("userProfile/:id", bearerAuth, userProfile);
+router.get("/users", bearerAuth, getUsers);
+router.get("/userProfile/:id", bearerAuth, userProfile);
 router.put("/userProfile/:id", bearerAuth, userProfileUpdate);
 
-router, post("/verification/:id", verification);
+router.post("/verification/:id", verification);
 router.get("/userPurchasesBill/:id", bearerAuth, userPurchasesBill);
-router.get("/usersActive", getUsersActive);
-router.get("/usersBlocked", getUsersBlocked);
+router.get("/usersActive", bearerAuth, getUsersActive);
+router.get("/usersBlocked", bearerAuth, getUsersBlocked);
+router.put("/blockedUser/:id", bearerAuth, blockedUser);
 
 module.exports = router;
