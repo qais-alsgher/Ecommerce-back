@@ -1,5 +1,19 @@
 "use strict";
 const { reports, reportController, users, items } = require("../models");
+const excludedAttributes = [
+  "password",
+  "email",
+  "role",
+  "createdAt",
+  "updatedAt",
+  "token",
+  "phoneNumber",
+  "address",
+  "confirmed",
+  "birhDate",
+  "gender",
+  "status",
+];
 
 const getReport = async (req, res) => {
   try {
@@ -13,20 +27,6 @@ const getReport = async (req, res) => {
 
 const getItemsReport = async (req, res) => {
   try {
-    const excludedAttributes = [
-      "password",
-      "email",
-      "role",
-      "createdAt",
-      "updatedAt",
-      "token",
-      "phoneNumber",
-      "address",
-      "confirmed",
-      "birhDate",
-      "gender",
-      "status",
-    ];
     const itemsRepoted = await items.findAll({
       attributes: { exclude: ["createdAt", "updatedAt"] },
       include: [
@@ -53,6 +53,33 @@ const getItemsReport = async (req, res) => {
   }
 };
 
+const getUsersReport = async (req, res) => {
+  try {
+    const usersRepoted = await users.findAll({
+      attributes: { exclude: excludedAttributes },
+      include: [
+        {
+          model: reports,
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "userId", "itemId"],
+          },
+          include: [
+            {
+              model: items,
+              attributes: { exclude: ["createdAt", "updatedAt"] },
+            },
+          ],
+        },
+      ],
+    });
+    res.status(200).send(usersRepoted);
+  } catch (error) {
+    res.status(500).send({
+      message:
+        err.message || "Some error occurred while retrieving users report.",
+    });
+  }
+};
 const createReport = async (req, res) => {
   try {
     const report = await reportController.create(req.body);
@@ -94,4 +121,5 @@ module.exports = {
   createReport,
   updateReport,
   deleteReport,
+  getUsersReport,
 };
