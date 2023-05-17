@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM("Pants", "Jacket", "Shoes", "T-shirt", "Other"),
       allowNull: false,
     },
+    color: {
+      type: DataTypes.ARRAY(DataTypes.STRING),
+      allowNull: false,
+    },
     size: {
       type: DataTypes.ENUM("XS", "S", "M", "L", "XL"),
       allowNull: false,
@@ -33,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     price: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    priceStripe: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },

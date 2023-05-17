@@ -9,6 +9,7 @@ const {
   Op,
   sequelize,
 } = require("../models/index.js");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const getItems = async (req, res) => {
   try {
@@ -110,59 +111,36 @@ const getItem = async (req, res) => {
 };
 
 const getTopSeller = async (req, res) => {
-  // try {
-  //   // get top seller items depend on number of purchases in user that bought this item
-  //   const topSeller = await items.findAll({
-  //     group: ["id"],
-  //     attributes: [
-  //       "id",
-  //       "title",
-  //       "image",
-  //       "price",
-  //       "category",
-  //       "clothesGender",
-  //       "description",
-  //       [sequelize.fn("COUNT", sequelize.col("carts.itemId")), "count"],
-  //     ],
-  //     include: [
-  //       {
-  //         model: carts,
-  //         attributes: [],
-  //       },
-  //     ],
-  //     //   order: [[sequelize.literal("count"), "DESC"]],
-  //     // order: sequelize.literal("count DESC"),
-  //     limit: 5,
-  //   });
-  //   res.status(200).json(topSeller);
-  // } catch (error) {
-  //   res.status(500).send(error.message);
-  // }
-
   try {
-    // get top seller items depend on number of purchases in user that bought this item
-    const topSeller = await items.findAll({
-      group: ["id"],
+    // get top seller item depend on number of items sold in cart table and group by itemId
+
+    const topSeller = await carts.findAll({
+      where: { status: "paid" },
+      group: ["itemId", "Item.id"],
       attributes: [
-        "id",
-        "title",
-        "image",
-        "price",
-        "category",
-        "clothesGender",
-        "description",
-        [sequelize.fn("COUNT", sequelize.col("carts.itemId")), "count"],
+        "itemId",
+        [sequelize.fn("COUNT", sequelize.col("itemId")), "count"],
       ],
       include: [
         {
-          model: carts,
-          attributes: [],
-          required: true, // add this line to enforce a join with "carts" table
+          model: items,
+          attributes: {
+            exclude: [
+              "createdAt",
+              "updatedAt",
+              "userId",
+              "category",
+              "clothesGender",
+              "color",
+              "size",
+            ],
+          },
         },
       ],
-      // order: [[sequelize.literal("count"), "DESC"]],
-      limit: 5,
+      order: [[sequelize.literal("count"), "DESC"]],
+      limit: 10,
     });
+
     res.status(200).json(topSeller);
   } catch (error) {
     res.status(500).send(error.message);
@@ -171,6 +149,28 @@ const getTopSeller = async (req, res) => {
 
 const createItem = async (req, res) => {
   try {
+    // create new item in stripe and get the id of this item and save it in our database
+    const { title, price, description, image } = req.body;
+
+    const product = await stripe.products.create({
+      name: title,
+      description: description,
+      images: [image],
+    });
+
+    const priceStripe = await stripe.prices.create({
+      unit_amount: price * 100,
+      currency: "usd",
+      product: product.id,
+    });
+    // req.body.priceStripe = priceStripe.id;
+
+    const data = {
+      ...req.body,
+      priceStripe: priceStripe.id,
+    };
+    console.log("data", data);
+
     const item = await items.create(req.body);
     res.status(201).json(item);
   } catch (error) {

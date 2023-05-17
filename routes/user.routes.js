@@ -10,7 +10,6 @@ const {
   getUsers,
   userProfile,
   userProfileUpdate,
-  userPurchasesBill,
   getUsersActive,
   getUsersBlocked,
   blockedUser,
@@ -24,7 +23,6 @@ router.get("/userProfile/:id", bearerAuth, userProfile);
 router.put("/userProfile/:id", bearerAuth, userProfileUpdate);
 
 router.post("/verification/:id", verification);
-router.get("/userPurchasesBill/:id", bearerAuth, userPurchasesBill);
 router.get("/usersActive", bearerAuth, getUsersActive);
 router.get("/usersBlocked", bearerAuth, getUsersBlocked);
 router.put("/blockedUser/:id", bearerAuth, blockedUser);

@@ -1,7 +1,7 @@
 "use strict";
 const bas64 = require("base-64");
 const bcrypt = require("bcrypt");
-const { users, items, Op } = require("../models");
+const { users, Op } = require("../models");
 
 const signup = async (req, res) => {
   try {
@@ -129,15 +129,6 @@ const userProfileUpdate = async (req, res) => {
   }
 };
 
-const userPurchasesBill = async (req, res) => {
-  try {
-    const bill = await items.findAll({ where: { userId: req.params.id } });
-    res.status(200).json(bill);
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-};
-
 const getUsersActive = async (req, res) => {
   try {
     const usersActive = await users.findAll({ where: { status: "Active" } });
@@ -176,7 +167,6 @@ module.exports = {
   getUsers,
   userProfile,
   userProfileUpdate,
-  userPurchasesBill,
   getUsersActive,
   getUsersBlocked,
   blockedUser,

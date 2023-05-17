@@ -14,6 +14,20 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    color: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    size: {
+      type: DataTypes.ENUM("XS", "S", "M", "L", "XL"),
+      allowNull: false,
+    },
+    status: {
+      // for paid or not paid
+      type: DataTypes.ENUM("pending", "paid"),
+      allowNull: false,
+      defaultValue: "Pending",
+    },
   });
   return Cart;
 };

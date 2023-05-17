@@ -6,6 +6,7 @@ const {
   createReport,
   updateReport,
   deleteReport,
+  getUsersReport,
 } = require("../controllers/reportController");
 
 // router.get("/report", getReport);
@@ -13,5 +14,7 @@ router.get("/report", getItemsReport);
 router.post("/report", createReport);
 router.delete("/report/:id", deleteReport);
 router.put("/report/:id", updateReport);
+
+router.get("/report/users", getUsersReport);
 
 module.exports = router;
