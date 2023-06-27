@@ -1,6 +1,7 @@
 "use strict";
 const router = require("express").Router();
 const {
+  AllItems,
   getItems,
   getItem,
   getTopSeller,
@@ -8,21 +9,15 @@ const {
   updateItem,
   deleteItem,
 } = require("../controllers/itemController");
+const bearerAuth = require("../middlewares/bearer-auth");
 
-router.get("/items", getItems);
-// router.get("/item/:category", getItems);
-// router.get("/item/:clothesGender", getItems);
-// router.get("/item/:price", getItems);
-// router.get("/item/:category/:clothesGender", getItems);
-// router.get("/item/:category/:price", getItems);
-// router.get("/item/:clothesGender/:price?", getItems);
+router.get("/allItems", bearerAuth, AllItems);
 router.get("/items/:category/:clothesGender?/:price?", getItems);
 
 router.get("/item/:id", getItem);
 router.get("/topSeller", getTopSeller);
-router.post("/item", createItem);
-router.delete("/item/:id", deleteItem);
-router.put("/item/:id", updateItem);
-// router for get by category and gender and price range
+router.post("/item", bearerAuth, createItem);
+router.delete("/item/:id", bearerAuth, deleteItem);
+router.put("/item/:id", bearerAuth, updateItem);
 
 module.exports = router;

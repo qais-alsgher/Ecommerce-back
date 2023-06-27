@@ -1,5 +1,6 @@
 "use strict";
-const { carts, cartController, items, Op } = require("../models");
+const { carts, cartController, items, Op, users } = require("../models");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const getCart = async (req, res) => {
   try {
@@ -70,7 +71,8 @@ const createCart = async (req, res) => {
       const updatedCart = await cartController.update(cart.id, {
         quantity: cart.quantity + dtat.quantity,
       });
-      res.status(201).send(updatedCart);
+      const updated = await cartController.read(cart.id);
+      res.status(201).send(updated);
     } else {
       const newCart = await cartController.create(req.body);
       res.status(201).send(newCart);
@@ -94,9 +96,61 @@ const updateCart = async (req, res) => {
   try {
     const id = req.params.id;
     const updated = await cartController.update(id, req.body);
-    res.status(204).send(updated);
+    const updatedCart = await cartController.read(id);
+    res.status(204).send(updatedCart);
   } catch (error) {
     res.status(500).send({ message: err.message });
+  }
+};
+
+const checkoutCart = async (req, res) => {
+  try {
+    const lineItems = req.body.carts;
+    const session = await stripe.checkout.sessions.create({
+      line_items: lineItems,
+      mode: "payment",
+      success_url: "http://localhost:3000/Success",
+      cancel_url: "http://localhost:3000/Cart",
+    });
+    res.status(200).send(JSON.stringify({ url: session.url }));
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
+const getAllOrders = async (req, res) => {
+  try {
+    const orders = await carts.findAll({
+      where: {
+        status: "paid",
+      },
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+      include: [
+        {
+          model: items,
+          attributes: { exclude: ["createdAt", "updatedAt", "StripeId"] },
+        },
+        {
+          model: users,
+          attributes: {
+            exclude: [
+              "createdAt",
+              "updatedAt",
+              "password",
+              "gender",
+              "confirmed",
+              "image",
+              "role",
+              "birthDate",
+              "status",
+            ],
+          },
+        },
+      ],
+    });
+    res.status(200).send(orders);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
   }
 };
 
@@ -107,4 +161,6 @@ module.exports = {
   deleteCart,
   updateCart,
   getUserCart,
+  checkoutCart,
+  getAllOrders,
 };

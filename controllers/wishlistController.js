@@ -69,10 +69,14 @@ const createWishlist = async (req, res) => {
 const updateWishlist = async (req, res) => {
   try {
     const id = req.params.id;
-    const updated = await wishlistController.update(id, req.body);
-    res.status(204).send(updated);
+    const updated = await wishlistController.update({
+      where: { id },
+      data: req.body,
+    });
+    const updatedWishItem = await wishlistController.read(id);
+    res.status(202).send(updatedWishItem);
   } catch (error) {
-    res.status(500).send({ message: err.message });
+    res.status(500).send({ message: error.message });
   }
 };
 

@@ -23,10 +23,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     status: {
-      // for paid or not paid
       type: DataTypes.ENUM("pending", "paid"),
       allowNull: false,
-      defaultValue: "Pending",
+      defaultValue: "pending",
     },
   });
   return Cart;

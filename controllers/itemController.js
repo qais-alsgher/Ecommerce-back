@@ -11,6 +11,19 @@ const {
 } = require("../models/index.js");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
+const AllItems = async (req, res) => {
+  try {
+    const allItems = await items.findAll({
+      attributes: {
+        exclude: ["createdAt", "updatedAt", "userId"],
+      },
+    });
+    res.status(200).json(allItems);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
 const getItems = async (req, res) => {
   try {
     let { category, clothesGender, price } = req.params;
@@ -19,7 +32,6 @@ const getItems = async (req, res) => {
     const categorylist = ["Pants", "Jacket", "Shoes", "T-shirt", "Other"];
 
     if (category && !categorylist.includes(category) && isNaN(+category)) {
-      console.log("category in the if", category);
       clothesGender = category;
       category = null;
     } else if (!isNaN(+category) && !categorylist.includes(category)) {
@@ -29,14 +41,6 @@ const getItems = async (req, res) => {
       price = clothesGender;
       clothesGender = null;
     }
-
-    console.log(+category);
-    console.log("category", category);
-    console.log("clothesGender", clothesGender);
-    console.log("price", price);
-    console.log("typeof", typeof price);
-    console.log("page", page);
-    console.log("limit", limit);
 
     // get all items depend on category , clothesGender and price range
     let whereHandler = {};
@@ -76,7 +80,32 @@ const getItems = async (req, res) => {
 
     const itemsData = await items.findAll({
       where: whereHandler,
-      attributes: { exclude: ["createdAt", "updatedAt"] },
+      attributes: {
+        exclude: [
+          "createdAt",
+          "updatedAt",
+          "userId",
+          "category",
+          "clothesGender",
+        ],
+      },
+      include: [
+        {
+          model: reviews,
+          attributes: {
+            exclude: [
+              "createdAt",
+              "updatedAt",
+              "id",
+              "itemId",
+              "userId",
+              "reviewMessage",
+            ],
+          },
+        },
+      ],
+      order: [["id", "DESC"]],
+
       limit: limit,
       offset: offset,
     });
@@ -110,13 +139,55 @@ const getItem = async (req, res) => {
   }
 };
 
+// const getTopSeller = async (req, res) => {
+//   try {
+//     // get top seller item depend on number of items sold in cart table and group by itemId
+
+//     const topSeller = await carts.findAll({
+//       where: { status: "paid" },
+//       group: ["itemId", "Item.id"],
+//       attributes: [
+//         "itemId",
+//         [sequelize.fn("COUNT", sequelize.col("itemId")), "count"],
+//       ],
+//       include: [
+//         {
+//           model: items,
+//           as: "Item",
+//           attributes: {
+//             exclude: [
+//               "createdAt",
+//               "updatedAt",
+//               "userId",
+//               "category",
+//               "clothesGender",
+//               "color",
+//               "size",
+//               "StripeId",
+//             ],
+//           },
+//           include: [
+//             {
+//               model: reviews,
+//               attributes: ["itemId"], // Specify the desired attributes of the review model
+//             },
+//           ],
+//         },
+//       ],
+//       order: [[sequelize.literal("count"), "DESC"]],
+//       limit: 10,
+//     });
+
+//     res.status(200).json(topSeller);
+//   } catch (error) {
+//     res.status(500).send(error.message);
+//   }
+// };
+
 const getTopSeller = async (req, res) => {
   try {
-    // get top seller item depend on number of items sold in cart table and group by itemId
-
     const topSeller = await carts.findAll({
       where: { status: "paid" },
-      group: ["itemId", "Item.id"],
       attributes: [
         "itemId",
         [sequelize.fn("COUNT", sequelize.col("itemId")), "count"],
@@ -133,10 +204,27 @@ const getTopSeller = async (req, res) => {
               "clothesGender",
               "color",
               "size",
+              "StripeId",
             ],
           },
+          include: [
+            {
+              model: reviews,
+              attributes: {
+                exclude: [
+                  "createdAt",
+                  "updatedAt",
+                  "id",
+                  "itemId",
+                  "userId",
+                  "reviewMessage",
+                ],
+              },
+            },
+          ],
         },
       ],
+      group: ["itemId", "Cart.id"],
       order: [[sequelize.literal("count"), "DESC"]],
       limit: 10,
     });
@@ -146,16 +234,14 @@ const getTopSeller = async (req, res) => {
     res.status(500).send(error.message);
   }
 };
-
 const createItem = async (req, res) => {
   try {
-    // create new item in stripe and get the id of this item and save it in our database
     const { title, price, description, image } = req.body;
 
     const product = await stripe.products.create({
       name: title,
       description: description,
-      images: [image],
+      images: image ? [...image] : [image],
     });
 
     const priceStripe = await stripe.prices.create({
@@ -163,15 +249,13 @@ const createItem = async (req, res) => {
       currency: "usd",
       product: product.id,
     });
-    // req.body.priceStripe = priceStripe.id;
 
     const data = {
       ...req.body,
-      priceStripe: priceStripe.id,
+      StripeId: priceStripe.id,
     };
-    console.log("data", data);
 
-    const item = await items.create(req.body);
+    const item = await items.create(data);
     res.status(201).json(item);
   } catch (error) {
     res.status(500).send(error.message);
@@ -185,7 +269,8 @@ const updateItem = async (req, res) => {
     const updatedItem = await items.update(data, {
       where: { id },
     });
-    res.status(200).json(updatedItem);
+    const item = await items.findOne({ where: { id } });
+    res.status(200).json(item);
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -204,6 +289,7 @@ const deleteItem = async (req, res) => {
 };
 
 module.exports = {
+  AllItems,
   getItems,
   getItem,
   getTopSeller,
