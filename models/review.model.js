@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     rating: {
-      type: DataTypes.ENUM("1", "2", "3", "4", "5"),
+      type: DataTypes.ENUM("0", "1", "2", "3", "4", "5"),
       allowNull: false,
     },
   });
