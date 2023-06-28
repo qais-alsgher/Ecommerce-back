@@ -13,6 +13,11 @@ const {
   getUsersActive,
   getUsersBlocked,
   blockedUser,
+  activeUser,
+  getUserStatistics,
+  getItemStatistics,
+  getSalesStatistics,
+  getNumbersStatistics,
 } = require("../controllers/userController");
 
 router.post("/signup", basicAuth, signup);
@@ -26,5 +31,11 @@ router.post("/verification/:id", verification);
 router.get("/usersActive", bearerAuth, getUsersActive);
 router.get("/usersBlocked", bearerAuth, getUsersBlocked);
 router.put("/blockedUser/:id", bearerAuth, blockedUser);
+router.put("/activeUser/:id", bearerAuth, activeUser);
+
+router.get("/admin/numbersStatistics", bearerAuth, getNumbersStatistics);
+router.get("/admin/userStatistics", bearerAuth, getUserStatistics);
+router.get("/admin/itemStatistics", bearerAuth, getItemStatistics);
+router.get("/admin/salesStatistics", bearerAuth, getSalesStatistics);
 
 module.exports = router;

@@ -95,7 +95,8 @@ const updateReport = async (req, res) => {
   try {
     const id = req.params.id;
     const updated = await reportController.update(id, req.body);
-    res.status(204).send(updated);
+    const report = await reportController.read(id);
+    res.status(204).send(report);
   } catch (err) {
     res.status(500).send({
       message: err.message || "Some error occurred while updating the report.",

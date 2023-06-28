@@ -15,13 +15,21 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     image: {
-      type: DataTypes.STRING,
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: false,
-      defaultValue:
-        "https://cdn.pixabay.com/photo/2013/07/13/12/07/avatar-159236__340.png",
+      defaultValue: [
+        "https://res.cloudinary.com/dutml7fij/image/upload/v1686601685/noImage_llqw4a.jpg",
+      ],
     },
     category: {
-      type: DataTypes.ENUM("Pants", "Jacket", "Shoes", "T-shirt", "Other"),
+      type: DataTypes.ENUM(
+        "Pajamas",
+        "Sweatpants",
+        "Jacket",
+        "T-shirt",
+        "Sneakers",
+        "Other",
+      ),
       allowNull: false,
     },
     color: {
@@ -29,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     size: {
-      type: DataTypes.ENUM("XS", "S", "M", "L", "XL"),
+      type: DataTypes.ARRAY(DataTypes.ENUM("XS", "S", "M", "L", "XL")),
       allowNull: false,
     },
     clothesGender: {
@@ -40,8 +48,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    priceStripe: {
-      type: DataTypes.INTEGER,
+    StripeId: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
   });
