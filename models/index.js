@@ -3,7 +3,7 @@ const { Sequelize, DataTypes, Op } = require("sequelize");
 const GeneralController = require("../collection/general-controller");
 require("dotenv").config();
 
-const Postges_URL = process.env.DB_URL || process.env.LOCALE_DB_URL;
+const Postges_URL = process.env.DATABASE_URL || process.env.LOCALE_DB_URL;
 const sequelizeOptions = {
   dialectOptions: {
     ssl: {
