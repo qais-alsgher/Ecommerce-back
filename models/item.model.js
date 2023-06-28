@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         "Jacket",
         "T-shirt",
         "Sneakers",
-        "Other",
+        "Other"
       ),
       allowNull: false,
     },

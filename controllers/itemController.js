@@ -29,7 +29,14 @@ const getItems = async (req, res) => {
     let { category, clothesGender, price } = req.params;
     const { page, limit } = req.query;
     const offset = (page - 1) * limit;
-    const categorylist = ["Pants", "Jacket", "Shoes", "T-shirt", "Other"];
+    const categorylist = [
+      "Pajamas",
+      "Sweatpants",
+      "Jacket",
+      "T-shirt",
+      "Sneakers",
+      "Other",
+    ];
 
     if (category && !categorylist.includes(category) && isNaN(+category)) {
       clothesGender = category;
@@ -138,51 +145,6 @@ const getItem = async (req, res) => {
     res.status(500).send(error.message);
   }
 };
-
-// const getTopSeller = async (req, res) => {
-//   try {
-//     // get top seller item depend on number of items sold in cart table and group by itemId
-
-//     const topSeller = await carts.findAll({
-//       where: { status: "paid" },
-//       group: ["itemId", "Item.id"],
-//       attributes: [
-//         "itemId",
-//         [sequelize.fn("COUNT", sequelize.col("itemId")), "count"],
-//       ],
-//       include: [
-//         {
-//           model: items,
-//           as: "Item",
-//           attributes: {
-//             exclude: [
-//               "createdAt",
-//               "updatedAt",
-//               "userId",
-//               "category",
-//               "clothesGender",
-//               "color",
-//               "size",
-//               "StripeId",
-//             ],
-//           },
-//           include: [
-//             {
-//               model: reviews,
-//               attributes: ["itemId"], // Specify the desired attributes of the review model
-//             },
-//           ],
-//         },
-//       ],
-//       order: [[sequelize.literal("count"), "DESC"]],
-//       limit: 10,
-//     });
-
-//     res.status(200).json(topSeller);
-//   } catch (error) {
-//     res.status(500).send(error.message);
-//   }
-// };
 
 const getTopSeller = async (req, res) => {
   try {
