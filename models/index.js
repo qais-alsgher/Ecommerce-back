@@ -4,16 +4,16 @@ const GeneralController = require("../collection/general-controller");
 require("dotenv").config();
 
 const Postges_URL = process.env.DB_URL || process.env.LOCALE_DB_URL;
-// const sequelizeOptions = {
-//   dialectOptions: {
-//     ssl: {
-//       require: true,
-//       rejectUnauthorized: false,
-//     },
-//   },
-// };
+const sequelizeOptions = {
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    },
+  },
+};
 
-const sequelizeOptions = {};
+// const sequelizeOptions = {};
 const db = {};
 db.Op = Op;
 let sequelize = new Sequelize(Postges_URL, sequelizeOptions);
