@@ -64,8 +64,14 @@ const updateReview = async (req, res) => {
   try {
     const id = req.params.id;
     const updated = await reviewController.update(id, req.body);
-    const review = await reviewController.read(id);
-    res.status(204).send(review);
+    if (updated) {
+      const review = await reviewController.read(id);
+      // const review = await reviews.findOne({
+      //   where: { id: id },
+      //   attributes: { exclude: ["createdAt", "updatedAt", "userId", "itemId"] },
+      // });
+      res.status(200).json(review);
+    }
   } catch (error) {
     res.status(500).send({ message: err.message });
   }
