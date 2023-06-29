@@ -13,7 +13,7 @@ const {
 } = require("../controllers/cartController");
 const bearerAuth = require("../middlewares/bearer-auth");
 
-router.get("/cart", bearerAuth, getCart);
+router.get("/cart", getCart);
 router.get("/cart/:id", getUserCart);
 router.get("/cart/orders/:id", getUserOrders);
 router.post("/cart", bearerAuth, createCart);
