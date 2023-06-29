@@ -1,7 +1,7 @@
 "use strict";
 const bas64 = require("base-64");
 const bcrypt = require("bcrypt");
-const { users, Op, sequelize, items, carts } = require("../models");
+const { users, Op, sequelize, items, carts, reports } = require("../models");
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
@@ -145,7 +145,17 @@ const verification = async (req, res) => {
 
 const getUsers = async (req, res) => {
   try {
-    const allUsers = await users.findAll();
+    const allUsers = await users.findAll({
+      attributes: { exclude: ["password"] },
+      include: [
+        {
+          model: reports,
+          attributes: {
+            exclude: ["userId", "itemId", "createdAt", "updatedAt"],
+          },
+        },
+      ],
+    });
     if (allUsers) {
       res.status(200).json(allUsers);
     } else {
@@ -184,7 +194,18 @@ const userProfileUpdate = async (req, res) => {
 
 const getUsersActive = async (req, res) => {
   try {
-    const usersActive = await users.findAll({ where: { status: "Active" } });
+    const usersActive = await users.findAll({
+      where: { status: "Active" },
+      attributes: { exclude: ["password"] },
+      include: [
+        {
+          model: reports,
+          attributes: {
+            exclude: ["userId", "itemId", "createdAt", "updatedAt"],
+          },
+        },
+      ],
+    });
     res.status(200).json(usersActive);
   } catch (error) {
     res.status(500).send(error.message);
@@ -193,7 +214,18 @@ const getUsersActive = async (req, res) => {
 
 const getUsersBlocked = async (req, res) => {
   try {
-    const usersBlocked = await users.findAll({ where: { status: "Blocked" } });
+    const usersBlocked = await users.findAll({
+      where: { status: "Blocked" },
+      attributes: { exclude: ["password"] },
+      include: [
+        {
+          model: reports,
+          attributes: {
+            exclude: ["userId", "itemId", "createdAt", "updatedAt"],
+          },
+        },
+      ],
+    });
     res.status(200).json(usersBlocked);
   } catch (error) {
     res.status(500).send(error.message);

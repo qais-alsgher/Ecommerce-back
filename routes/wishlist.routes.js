@@ -8,6 +8,7 @@ const {
   getUserWishlist,
 } = require("../controllers/wishlistController");
 const bearerAuth = require("../middlewares/bearer-auth");
+const acl = require("../middlewares/acl");
 
 router.get("/wishlist", bearerAuth, getWishlist);
 router.get("/wishlist/:id", bearerAuth, getUserWishlist);
