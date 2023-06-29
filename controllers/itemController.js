@@ -164,9 +164,6 @@ const getTopSeller = async (req, res) => {
               "userId",
               "category",
               "clothesGender",
-              "color",
-              "size",
-              "StripeId",
             ],
           },
           include: [
