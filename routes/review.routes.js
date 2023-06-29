@@ -7,11 +7,12 @@ const {
   deleteReview,
   updateReview,
 } = require("../controllers/reviewController");
+const bearerAuth = require("../middlewares/bearer-auth");
 
 router.get("/review", getReview);
 router.get("/review/:id", getItemReview);
-router.post("/review", createReview);
-router.delete("/review/:id", deleteReview);
-router.put("/review/:id", updateReview);
+router.post("/review", bearerAuth, createReview);
+router.delete("/review/:id", bearerAuth, deleteReview);
+router.put("/review/:id", bearerAuth, updateReview);
 
 module.exports = router;
