@@ -13,7 +13,7 @@ const acl = require("../middlewares/acl");
 router.get("/review", getReview);
 router.get("/review/:id", getItemReview);
 router.post("/review", bearerAuth, createReview);
-router.delete("/review/:id", bearerAuth, acl, deleteReview);
+router.delete("/review/:id", bearerAuth, deleteReview);
 router.put("/review/:id", bearerAuth, updateReview);
 
 module.exports = router;

@@ -9,7 +9,7 @@ const acl = async (req, res, next) => {
     const user = await users.findOne({
       where: { id: userId },
     });
-    if (user.role === "Admin") {
+    if (user.role === "Admin" || userId === id) {
       next();
     } else {
       const item = await items.findOne({
