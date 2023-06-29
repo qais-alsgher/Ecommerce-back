@@ -11,11 +11,11 @@ const {
 const bearerAuth = require("../middlewares/bearer-auth");
 
 // router.get("/report", getReport);
-router.get("/report", getItemsReport);
-router.post("/report", createReport);
-router.delete("/report/:id", deleteReport);
-router.put("/report/:id", updateReport);
+router.get("/report", bearerAuth, getItemsReport);
+router.post("/report", bearerAuth, createReport);
+router.delete("/report/:id", bearerAuth, deleteReport);
+router.put("/report/:id", bearerAuth, updateReport);
 
-router.get("/report/users", getUsersReport);
+router.get("/report/users", bearerAuth, getUsersReport);
 
 module.exports = router;
