@@ -25,8 +25,8 @@ router.post("/signup", basicAuth, signup);
 router.post("/login", login);
 // router.get("/users", bearerAuth, permissions("read"), getUsers);
 router.get("/users", bearerAuth, acl, getUsers);
-router.get("/userProfile/:id", bearerAuth, acl, userProfile);
-router.put("/userProfile/:id", bearerAuth, acl, userProfileUpdate);
+router.get("/userProfile/:id", bearerAuth, userProfile);
+router.put("/userProfile/:id", bearerAuth, userProfileUpdate);
 
 router.post("/verification/:id", verification);
 router.get("/usersActive", bearerAuth, acl, getUsersActive);
