@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@mapbox/node-pre-gyp": "^1.0.1",
     "base-64": "^1.0.0",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
