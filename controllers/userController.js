@@ -153,6 +153,20 @@ const getUsers = async (req, res) => {
           attributes: {
             exclude: ["userId", "itemId", "createdAt", "updatedAt"],
           },
+          include: [
+            {
+              model: users,
+              attributes: {
+                exclude: [
+                  "password",
+                  "createdAt",
+                  "updatedAt",
+                  "confirmed",
+                  "status",
+                ],
+              },
+            },
+          ],
         },
       ],
     });
@@ -223,6 +237,20 @@ const getUsersBlocked = async (req, res) => {
           attributes: {
             exclude: ["userId", "itemId", "createdAt", "updatedAt"],
           },
+          include: [
+            {
+              model: users,
+              attributes: {
+                exclude: [
+                  "password",
+                  "createdAt",
+                  "updatedAt",
+                  "confirmed",
+                  "status",
+                ],
+              },
+            },
+          ],
         },
       ],
     });
