@@ -232,7 +232,7 @@ const updateItem = async (req, res) => {
       where: { id },
     });
     const item = await items.findOne({ where: { id } });
-    res.status(200).json(item);
+    res.status(204).json(item);
   } catch (error) {
     res.status(500).send(error.message);
   }

@@ -64,12 +64,8 @@ const updateReview = async (req, res) => {
   try {
     const id = req.params.id;
     const updated = await reviewController.update(id, req.body);
-    if (updated[0] === 0) {
-      res.status(400).send("Review not found");
-    } else if (updated[0] === 1) {
-      const review = await reviewController.read(id);
-      res.status(204).send(review);
-    }
+    const review = await reviewController.read(id);
+    res.status(204).send(review);
   } catch (error) {
     res.status(500).send({ message: err.message });
   }
