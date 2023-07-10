@@ -46,7 +46,7 @@ const signup = async (req, res) => {
         html: `<h5>Hello ${newUser.gender === "Male" ? "Mr." : "Ms."}${
           newUser.userName
         } Please Verify Your Email</h5>
-      <p>Click <a href="http://localhost:3000/verify/${
+      <p>Click <a href="https://deploy-preview-7--ornate-cobbler-73113a.netlify.app/verify/${
         newUser.id
       }">Here</a> To Verify Your Email</p>`,
       };
