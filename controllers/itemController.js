@@ -11,6 +11,7 @@ const {
 } = require("../models/index.js");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
+// for getting all items
 const AllItems = async (req, res) => {
   try {
     const allItems = await items.findAll({
@@ -24,6 +25,8 @@ const AllItems = async (req, res) => {
   }
 };
 
+// for getting all items by filter and page number and limit
+// get all items depend on category , clothesGender and price range
 const getItems = async (req, res) => {
   try {
     let { category, clothesGender, price } = req.params;
@@ -38,6 +41,7 @@ const getItems = async (req, res) => {
       "Other",
     ];
 
+    // if category is not in category list and not a number
     if (category && !categorylist.includes(category) && isNaN(+category)) {
       clothesGender = category;
       category = null;
@@ -49,7 +53,7 @@ const getItems = async (req, res) => {
       clothesGender = null;
     }
 
-    // get all items depend on category , clothesGender and price range
+    // opject to handle where condition about category , clothesGender and price
     let whereHandler = {};
     if (category && clothesGender && price) {
       whereHandler = {
@@ -85,6 +89,7 @@ const getItems = async (req, res) => {
       };
     }
 
+    // get all items depend on where condition and limit and offset
     const itemsData = await items.findAll({
       where: whereHandler,
       attributes: {
@@ -122,6 +127,7 @@ const getItems = async (req, res) => {
   }
 };
 
+// for getting one item by id with reviews and user data
 const getItem = async (req, res) => {
   try {
     const item = await items.findOne({
@@ -146,6 +152,7 @@ const getItem = async (req, res) => {
   }
 };
 
+// for getting top seller items
 const getTopSeller = async (req, res) => {
   try {
     const topSeller = await carts.findAll({
@@ -193,6 +200,8 @@ const getTopSeller = async (req, res) => {
     res.status(500).send(error.message);
   }
 };
+
+// for creating new item
 const createItem = async (req, res) => {
   try {
     const { title, price, description, image } = req.body;

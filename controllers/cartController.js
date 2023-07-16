@@ -2,6 +2,7 @@
 const { carts, cartController, items, Op, users } = require("../models");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
+// for getting all carts
 const getCart = async (req, res) => {
   try {
     const id = req.params.id;
@@ -12,6 +13,7 @@ const getCart = async (req, res) => {
   }
 };
 
+// for getting carts by user id
 const getUserCart = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -32,6 +34,7 @@ const getUserCart = async (req, res) => {
   } catch (error) {}
 };
 
+// for getting
 const getUserOrders = async (req, res) => {
   try {
     const userId = req.params.id;
@@ -109,8 +112,8 @@ const checkoutCart = async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       mode: "payment",
-      success_url: "http://localhost:3000/Success",
-      cancel_url: "http://localhost:3000/Cart",
+      success_url: `${process.env.DEPLOY_URL}/Sucess`,
+      cancel_url: `${process.env.DEPLOY_URL}/Cart`,
     });
     res.status(200).send(JSON.stringify({ url: session.url }));
   } catch (error) {
